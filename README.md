@@ -7,6 +7,17 @@
 
 ### Proposal
 
+## Definitions
+
+| json         |  LISP |
+| ---          |  ---- |
+| null         |  symbol NULL |
+| boolean      |  BOOLEAN i.e. T and NIL. |
+| object       |  HASH-TABLE |
+| array        |  VECTOR |
+| number       |  NUMBER |
+| string       |  STRING |
+
 ## Usage
 
 ## From developer
