@@ -2,9 +2,11 @@
 (in-package :asdf)
 (defsystem "rpjson"
   :version
-  "0.0.0"
+  "0.1.0"
   :depends-on
-  nil
+  (
+   "named-readtables" ; Readtable manager.
+   )
   :pathname
   "src/"
   :components
