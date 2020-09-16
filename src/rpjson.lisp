@@ -137,5 +137,5 @@
 
 (defun print-json (exp &optional stream)
   (let ((*print-pprint-dispatch* *print-jprint-dispatch*) (*nest* *nest*))
-    (pprint-logical-block (stream nil)
-      (funcall (pprint-dispatch exp) stream exp))))
+    (pprint-logical-block (stream nil) (write exp :stream stream)))
+  exp)
