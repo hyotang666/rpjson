@@ -32,14 +32,13 @@
                       v))
     object))
 
-(defun |"-reader| (stream character)
-  (let ((contents
-         (let ((*readtable* (copy-readtable nil)))
-           (funcall (get-macro-character character) stream character))))
-    (cond ((string= "null" contents) 'null)
-          ((string= "true" contents) t)
-          ((string= "false" contents) nil)
-          (t contents))))
+(let ((reader (get-macro-character #\" (copy-readtable nil))))
+  (defun |"-reader| (stream character)
+    (let ((contents (funcall reader stream character)))
+      (cond ((string= "null" contents) 'null)
+            ((string= "true" contents) t)
+            ((string= "false" contents) nil)
+            (t contents)))))
 
 (named-readtables:defreadtable rpjson
   (:macro-char #\: '|:-reader|)
