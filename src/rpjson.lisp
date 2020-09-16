@@ -25,7 +25,11 @@
         (object (make-hash-table :test #'eq))
         (*package* (find-package :keyword)))
     (loop :for (k v) :on contents :by #'cddr
-          :do (setf (gethash (read-from-string k) object) v))
+          :do (setf (gethash
+                      (read-from-string
+                        (symbol-munger:camel-case->lisp-name k))
+                      object)
+                      v))
     object))
 
 (defun |"-reader| (stream character)

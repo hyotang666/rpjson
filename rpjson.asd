@@ -2,10 +2,11 @@
 (in-package :asdf)
 (defsystem "rpjson"
   :version
-  "0.1.0"
+  "0.1.1"
   :depends-on
   (
    "named-readtables" ; Readtable manager.
+   "symbol-munger" ; Convert kebab <-> camel.
    )
   :pathname
   "src/"
