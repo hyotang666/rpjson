@@ -11,15 +11,20 @@
   (values))
 
 (defun |,-reader| (stream character)
-  (declare (ignore stream character))
-  (values))
+  (declare (ignore character))
+  (case (peek-char t stream)
+    ((#\] #\}) (values))
+    ((#\,) nil)
+    (otherwise (read stream t t t))))
 
 (defun |[-reader| (stream character)
   (declare (ignore character))
   (let ((*readtable* (copy-readtable)))
     (set-macro-character #\, '|,-reader|)
     (set-macro-character #\" '|"-reader|)
-    `(vector ,@(read-delimited-list #\] stream t))))
+    (if (char= #\, (peek-char t stream))
+        `(vector nil ,@(read-delimited-list #\] stream t))
+        `(vector ,@(read-delimited-list #\] stream t)))))
 
 (defun |{-reader| (stream character)
   (declare (ignore character))
