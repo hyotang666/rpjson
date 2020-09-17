@@ -33,12 +33,11 @@
     (set-macro-character #\, '|,-reader|)
     (set-macro-character #\" '|"-reader|)
     (let ((contents (read-delimited-list #\} stream t))
-          (var (gensym "HASH-TABLE")))
+          (var (gensym "HASH-TABLE"))
+          (package (find-package :keyword)))
       `(let ((,var (make-hash-table :test #'eq)))
          ,@(loop :for (k v) :on contents :by #'cddr
-                 :collect `(setf (gethash
-                                   ,(symbol-munger:camel-case->keyword k) ,var)
-                                   ,v))
+                 :collect `(setf (gethash ,(intern k package) ,var) ,v))
          ,var))))
 
 (let ((reader (get-macro-character #\" (copy-readtable nil))))
@@ -69,8 +68,7 @@
 
 (defun jprint-keyword (stream exp)
   (setf stream (or stream *standard-output*))
-  (write-string (format nil "\"~A\"" (symbol-munger:lisp->camel-case exp))
-                stream)
+  (write-string (format nil "\"~A\"" (symbol-name exp)) stream)
   exp)
 
 (defparameter *indent* 4)
