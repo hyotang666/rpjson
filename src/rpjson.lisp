@@ -16,21 +16,28 @@
 
 (defun |[-reader| (stream character)
   (declare (ignore character))
-  (let ((contents (read-delimited-list #\] stream t)))
-    (coerce contents 'vector)))
+  (let ((*readtable* (copy-readtable)))
+    (set-macro-character #\, '|,-reader|)
+    (set-macro-character #\" '|"-reader|)
+    (let ((contents (read-delimited-list #\] stream t)))
+      (coerce contents 'vector))))
 
 (defun |{-reader| (stream character)
   (declare (ignore character))
-  (let ((contents (read-delimited-list #\} stream t))
-        (object (make-hash-table :test #'eq))
-        (*package* (find-package :keyword)))
-    (loop :for (k v) :on contents :by #'cddr
-          :do (setf (gethash
-                      (read-from-string
-                        (symbol-munger:camel-case->lisp-name k))
-                      object)
-                      v))
-    object))
+  (let ((*readtable* (copy-readtable)))
+    (set-macro-character #\: '|:-reader|)
+    (set-macro-character #\, '|,-reader|)
+    (set-macro-character #\" '|"-reader|)
+    (let ((contents (read-delimited-list #\} stream t))
+          (object (make-hash-table :test #'eq))
+          (*package* (find-package :keyword)))
+      (loop :for (k v) :on contents :by #'cddr
+            :do (setf (gethash
+                        (read-from-string
+                          (symbol-munger:camel-case->lisp-name k))
+                        object)
+                        v))
+      object)))
 
 (let ((reader (get-macro-character #\" (copy-readtable nil))))
   (defun |"-reader| (stream character)
@@ -41,11 +48,10 @@
             (t contents)))))
 
 (named-readtables:defreadtable rpjson
-  (:macro-char #\: '|:-reader|)
-  (:macro-char #\, '|,-reader|)
   (:macro-char #\[ '|[-reader|)
+  (:macro-char #\] (get-macro-character #\) (copy-readtable nil)))
   (:macro-char #\{ '|{-reader|)
-  (:macro-char #\" '|"-reader|))
+  (:macro-char #\} (get-macro-character #\) (copy-readtable nil))))
 
 (defun read-json (&optional stream errorp return)
   (let ((*readtable* (named-readtables:find-readtable 'rpjson)))
