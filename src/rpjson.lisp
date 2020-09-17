@@ -33,14 +33,11 @@
     (set-macro-character #\, '|,-reader|)
     (set-macro-character #\" '|"-reader|)
     (let ((contents (read-delimited-list #\} stream t))
-          (*package* (find-package :keyword))
           (var (gensym "HASH-TABLE")))
       `(let ((,var (make-hash-table :test #'eq)))
          ,@(loop :for (k v) :on contents :by #'cddr
                  :collect `(setf (gethash
-                                   ,(read-from-string
-                                      (symbol-munger:camel-case->lisp-name k))
-                                   ,var)
+                                   ,(symbol-munger:camel-case->keyword k) ,var)
                                    ,v))
          ,var))))
 
