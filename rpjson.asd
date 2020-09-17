@@ -2,7 +2,7 @@
 (in-package :asdf)
 (defsystem "rpjson"
   :version
-  "0.2.3"
+  "0.2.4"
   :depends-on
   (
    "named-readtables" ; Readtable manager.

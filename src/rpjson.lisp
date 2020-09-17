@@ -19,8 +19,7 @@
   (let ((*readtable* (copy-readtable)))
     (set-macro-character #\, '|,-reader|)
     (set-macro-character #\" '|"-reader|)
-    (let ((contents (read-delimited-list #\] stream t)))
-      (coerce contents 'vector))))
+    `(vector ,@(read-delimited-list #\] stream t))))
 
 (defun |{-reader| (stream character)
   (declare (ignore character))
@@ -29,20 +28,21 @@
     (set-macro-character #\, '|,-reader|)
     (set-macro-character #\" '|"-reader|)
     (let ((contents (read-delimited-list #\} stream t))
-          (object (make-hash-table :test #'eq))
-          (*package* (find-package :keyword)))
-      (loop :for (k v) :on contents :by #'cddr
-            :do (setf (gethash
-                        (read-from-string
-                          (symbol-munger:camel-case->lisp-name k))
-                        object)
-                        v))
-      object)))
+          (*package* (find-package :keyword))
+          (var (gensym "HASH-TABLE")))
+      `(let ((,var (make-hash-table :test #'eq)))
+         ,@(loop :for (k v) :on contents :by #'cddr
+                 :collect `(setf (gethash
+                                   ,(read-from-string
+                                      (symbol-munger:camel-case->lisp-name k))
+                                   ,var)
+                                   ,v))
+         ,var))))
 
 (let ((reader (get-macro-character #\" (copy-readtable nil))))
   (defun |"-reader| (stream character)
     (let ((contents (funcall reader stream character)))
-      (cond ((string= "null" contents) 'null)
+      (cond ((string= "null" contents) ''null)
             ((string= "true" contents) t)
             ((string= "false" contents) nil)
             (t contents)))))
