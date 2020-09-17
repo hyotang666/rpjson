@@ -67,7 +67,9 @@
 (defun jprint-false (stream exp) (write-string "\"false\"" stream) exp)
 
 (defun jprint-keyword (stream exp)
-  (write-string (format nil "\"~A\"" (symbol-name exp)) stream)
+  (write-char #\" stream)
+  (write-string (symbol-name exp) stream)
+  (write-char #\" stream)
   exp)
 
 (defparameter *indent* 4)
