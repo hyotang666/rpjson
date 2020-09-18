@@ -1,11 +1,11 @@
-# RPJSON 0.0.0
+# RPJSON 1.0.0
 ## What is this?
+Json reader / printer / code-formatter.
 
-### Current lisp world
+### NOTE
+This is just fruit of my github pages articles about [readtable](https://hyotang666.github.io/archives/readtable.html) and [pretty-printers](https://hyotang666.github.io/archives/pprint.html).
 
-### Issues
-
-### Proposal
+If you are searching json libraries [other one is strongly recommended.](https://sabracrolleton.github.io/json-review.html).
 
 ## Definitions
 
@@ -25,6 +25,7 @@
 ### Product's goal
 
 ### License
+public domain
 
 ### Developed with
 

@@ -10,7 +10,10 @@
   :pathname
   "src/"
   :components
-  ((:file "rpjson")))
+  ((:file "rpjson"))
+  :author "SATO Shinichi"
+  :license "public domain"
+  :description "Json reader / printer / code-formatter.")
 
 ;;; These forms below are added by JINGOH.GENERATOR.
 ;; Ensure in ASDF for pretty printings.
