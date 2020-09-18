@@ -2,7 +2,13 @@
 
 (defpackage :rpjson
   (:use :cl)
-  (:export))
+  (:export ;; Main api.
+           #:read-json
+           #:print-json
+           ;; Readtable name.
+           #:rpjson
+           ;; Config
+           #:*indent*))
 
 (in-package :rpjson)
 
